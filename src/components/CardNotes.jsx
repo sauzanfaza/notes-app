@@ -2,7 +2,6 @@ import { useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { PiPlusBold } from "react-icons/pi";
-import { motion } from 'framer-motion';
 
 
 
@@ -13,7 +12,7 @@ export default function CardNotes() {
 
     const addNewnotes = () => {
         if(title.trim() === "" || text.trim() === "") return 
-        const newId = dataNotes.length > 0 ? dataNotes[dataNotes.length - 1].id : 1;
+        const newId = dataNotes.length > 0 ? Math.max(...dataNotes.map(note => note.id)) + 1 : 1;
         const newNote = {
             id: newId,
             title,
@@ -21,10 +20,14 @@ export default function CardNotes() {
         }
         setDataNotes([...dataNotes, newNote]);
         setTitle('');
-        setText('');
-        
+        setText('');     
     }
 
+    const deleteNote = (id) => {
+        // console.log("Menghapus note: ", id)
+        const notesBaru = dataNotes.filter((note) => note.id !== id);
+        setDataNotes(notesBaru);
+    }
 
     return (
         <>
@@ -43,7 +46,9 @@ export default function CardNotes() {
                     {/* <div className="flex-1"></div> */}
                     <div className="flex justify-between gap-2 text-sm">
                         <button className="text-black mx-1 hover:text-white text-sm cursor-pointer"><BsPencilSquare /></button>
-                        <button className="text-red-500 hover:text-red-700 cursor-pointer text-sm"><FaRegTrashCan /></button>
+                        <button 
+                        onClick={() => deleteNote(notes.id)}
+                        className="text-red-500 hover:text-red-700 cursor-pointer text-sm"><FaRegTrashCan /></button>
                     </div>
                 </div>
                 </div>
