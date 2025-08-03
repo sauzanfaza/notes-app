@@ -9,7 +9,7 @@ export default function Navbar() {
                     className="w-40 sm:w-56 md:w-64 lg:w-80 text-md rounded-md p-1 pl-2
                     bg-white/20 backdrop-blur-xl shadow-md border-white/80 focus:outline-none" 
                 />
-                <button className="bg-sky-700 text-white ml-1 text-sm p-1 rounded-md">cari</button>
+                <button className="bg-sky-600 text-white ml-1 text-xs p-2 rounded-md hover:bg-sky-700 cursor-pointer">cari</button>
             </div>
         </header>
         </>

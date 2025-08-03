@@ -1,7 +1,10 @@
+// import { useEffect } from "react";
 import { useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { PiPlusBold } from "react-icons/pi";
+import { FaSave } from "react-icons/fa";
+
 
 
 
@@ -9,7 +12,11 @@ export default function CardNotes() {
     const [dataNotes, setDataNotes] = useState([])
     const [title, setTitle] = useState("");
     const [text, setText] = useState("");
-
+    const [edit, setEdit] = useState(false)
+    const [editId, setEditId] = useState(null)
+    const [editTitle, setEditTitle] = useState("")
+    const [editText , setEditText] = useState("")
+    
     const addNewnotes = () => {
         if(title.trim() === "" || text.trim() === "") return 
         const newId = dataNotes.length > 0 ? Math.max(...dataNotes.map(note => note.id)) + 1 : 1;
@@ -17,16 +24,51 @@ export default function CardNotes() {
             id: newId,
             title,
             text,
+            date: new Date(),
         }
         setDataNotes([...dataNotes, newNote]);
         setTitle('');
         setText('');     
     }
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+        const year = String(date.getFullYear()).slice(-2); // ambil 2 digit terakhir
+        return `${day}/${month}/${year}`;
+    };
+
     const deleteNote = (id) => {
-        // console.log("Menghapus note: ", id)
+        // console.log("Menghapus note: ", id) //debugging
         const notesBaru = dataNotes.filter((note) => note.id !== id);
         setDataNotes(notesBaru);
+    }
+
+    const startEdit = (id) => {
+        const itemToEdit = dataNotes.find((item) => item.id === id);
+        if(itemToEdit) {
+            setEdit(true);
+            setEditId(id);
+            setEditTitle(itemToEdit.title);
+            setEditText(itemToEdit.text);
+        }
+    }
+
+    const saveEdit = () => {
+            const notesEdit = dataNotes.map((note) => 
+            note.id === editId ? { 
+                ...note, 
+                title:editTitle, 
+                text:editText,
+                date: new Date(),
+            } : note)
+            setDataNotes(notesEdit)
+            setEdit(false);
+            setEditId(null);
+            setEditTitle("");
+            setEditText("");
+        
     }
 
     return (
@@ -38,17 +80,43 @@ export default function CardNotes() {
                 className="relative h-40 flex flex-col bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
                 >
                 <div className="mb-4 overflow-hidden">
-                <h1 className="font-semibold">{notes.title}</h1>
-                <p className="text-xs break-words text-ellipsis">{notes.text}</p>
+                    {edit && editId === notes.id ? (
+                        <>
+                            <input type="text" 
+                            className="focus:outline-none"
+                            value={editTitle}
+                            onChange={(e) =>  setEditTitle(e.target.value)}
+                            />
+                            <textarea
+                            className="focus:outline-none"
+                                rows={3}
+                                value={editText}
+                                onChange={(e) => setEditText(e.target.value)}
+                            ></textarea>
+                        </>
+                    ) : (
+                        <>
+                        <h1 className="font-semibold">{notes.title}</h1>
+                        <p className="text-xs break-words text-ellipsis">{notes.text}</p>
+                        </>
+                    )}
                 </div>
                 <div className="absolute bottom-3 left-3 right-2 flex items-center justify-between">
-                    <div className="flex items-center text-xs">12/02/2025</div>
+                    <div className="flex items-center text-xs">{formatDate(notes.date)}</div>
                     {/* <div className="flex-1"></div> */}
                     <div className="flex justify-between gap-2 text-sm">
-                        <button className="text-black mx-1 hover:text-white text-sm cursor-pointer"><BsPencilSquare /></button>
+                        <button 
+                        onClick={() => startEdit(notes.id) }
+                        className="text-black mx-1 hover:text-white text-sm cursor-pointer"><BsPencilSquare /></button>
+                        <button 
+                        disabled={!edit}
+                        onClick={saveEdit}
+                        className={`${edit ?  'text-green-600 hover:text-green-700 text-sm cursor-pointer' : 'text-slate-500 cursor-not-allowed'} `}
+                        ><FaSave /></button>
                         <button 
                         onClick={() => deleteNote(notes.id)}
                         className="text-red-500 hover:text-red-700 cursor-pointer text-sm"><FaRegTrashCan /></button>
+                        
                     </div>
                 </div>
                 </div>
