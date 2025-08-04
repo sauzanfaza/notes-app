@@ -1,14 +1,11 @@
 // import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { PiPlusBold } from "react-icons/pi";
 import { FaSave } from "react-icons/fa";
 
-
-
-
-export default function CardNotes() {
+export default function CardNotes({search}) {
     const [dataNotes, setDataNotes] = useState([])
     const [title, setTitle] = useState("");
     const [text, setText] = useState("");
@@ -16,7 +13,12 @@ export default function CardNotes() {
     const [editId, setEditId] = useState(null)
     const [editTitle, setEditTitle] = useState("")
     const [editText , setEditText] = useState("")
-    
+
+    const filteredNotes =  useMemo(() => {
+        return search.trim() ? dataNotes.filter((note) => note.title.toLowerCase().includes(search.toLowerCase()) ||
+            note.text.toLowerCase().includes(search.toLowerCase())) : dataNotes;
+    }, [dataNotes, search])
+
     const addNewnotes = () => {
         if(title.trim() === "" || text.trim() === "") return 
         const newId = dataNotes.length > 0 ? Math.max(...dataNotes.map(note => note.id)) + 1 : 1;
@@ -34,13 +36,12 @@ export default function CardNotes() {
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
-        const year = String(date.getFullYear()).slice(-2); // ambil 2 digit terakhir
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+        const year = String(date.getFullYear()).slice(-2); 
         return `${day}/${month}/${year}`;
     };
 
     const deleteNote = (id) => {
-        // console.log("Menghapus note: ", id) //debugging
         const notesBaru = dataNotes.filter((note) => note.id !== id);
         setDataNotes(notesBaru);
     }
@@ -68,13 +69,15 @@ export default function CardNotes() {
             setEditId(null);
             setEditTitle("");
             setEditText("");
-        
     }
+    
+            
+
 
     return (
         <>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg-grid-cols-6 gap-4 p-4 ">
-            {dataNotes.map((notes) => (
+            {filteredNotes.map((notes) => (
                 <div
                 key={notes.id}
                 className="relative h-40 flex flex-col bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
@@ -88,7 +91,7 @@ export default function CardNotes() {
                             onChange={(e) =>  setEditTitle(e.target.value)}
                             />
                             <textarea
-                            className="focus:outline-none"
+                                className="focus:outline-none scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent"
                                 rows={3}
                                 value={editText}
                                 onChange={(e) => setEditText(e.target.value)}
@@ -96,22 +99,21 @@ export default function CardNotes() {
                         </>
                     ) : (
                         <>
-                        <h1 className="font-semibold">{notes.title}</h1>
-                        <p className="text-xs break-words text-ellipsis">{notes.text}</p>
+                        <h1 className="font-semibold truncate">{notes.title}</h1>
+                        <p className="text-xs break-words line-clamp-3">{notes.text}</p>
                         </>
                     )}
                 </div>
                 <div className="absolute bottom-3 left-3 right-2 flex items-center justify-between">
                     <div className="flex items-center text-xs">{formatDate(notes.date)}</div>
-                    {/* <div className="flex-1"></div> */}
                     <div className="flex justify-between gap-2 text-sm">
                         <button 
-                        onClick={() => startEdit(notes.id) }
+                        onClick={() => startEdit(notes.id) }t
                         className="text-black mx-1 hover:text-white text-sm cursor-pointer"><BsPencilSquare /></button>
                         <button 
                         disabled={!edit}
                         onClick={saveEdit}
-                        className={`${edit ?  'text-green-600 hover:text-green-700 text-sm cursor-pointer' : 'text-slate-500 cursor-not-allowed'} `}
+                        className={`${edit ? 'text-green-600 hover:text-green-700 text-sm cursor-pointer' : 'text-slate-500 cursor-not-allowed'} `}
                         ><FaSave /></button>
                         <button 
                         onClick={() => deleteNote(notes.id)}
