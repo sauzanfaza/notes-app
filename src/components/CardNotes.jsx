@@ -82,7 +82,8 @@ export default function CardNotes({search}) {
                 key={notes.id}
                 className="relative h-40 flex flex-col  bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
                 >
-                <div className="mb-4 overflow-hidden">
+                <div className="mb-4 overflow-hidden"
+                contentEditable>
                     {edit && editId === notes.id ? (
                         <>
                             <input type="text" 
@@ -94,7 +95,8 @@ export default function CardNotes({search}) {
                                 className="focus:outline-none scroll-transparent overflow-y-auto"
                                 rows={3}
                                 style={{
-                                    scrollbarWidth: 'none'
+                                    scrollbarWidth: 'none',
+                                    resize: 'none'
                                 }}
                                 value={editText}
                                 onChange={(e) => setEditText(e.target.value)}
