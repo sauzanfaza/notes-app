@@ -80,7 +80,7 @@ export default function CardNotes({search}) {
             {filteredNotes.map((notes) => (
                 <div
                 key={notes.id}
-                className="relative h-40 flex flex-col bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
+                className="relative h-40 flex flex-col  bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
                 >
                 <div className="mb-4 overflow-hidden">
                     {edit && editId === notes.id ? (
@@ -91,8 +91,11 @@ export default function CardNotes({search}) {
                             onChange={(e) =>  setEditTitle(e.target.value)}
                             />
                             <textarea
-                                className="focus:outline-none scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent"
+                                className="focus:outline-none scroll-transparent overflow-y-auto"
                                 rows={3}
+                                style={{
+                                    scrollbarWidth: 'none'
+                                }}
                                 value={editText}
                                 onChange={(e) => setEditText(e.target.value)}
                             ></textarea>

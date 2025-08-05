@@ -5,11 +5,14 @@ textarea::-webkit-scrollbar {
 }
 
 textarea::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3); /* thumb warna putih transparan */
-  border-radius: 8px;
-  background-clip: padding-box;
+  background-color: transparent;
+}
+
+textarea:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
 }
 
 textarea::-webkit-scrollbar-track {
-  background: transparent;
+  background-color: transparent;
 }
