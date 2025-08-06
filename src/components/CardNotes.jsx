@@ -15,9 +15,12 @@ export default function CardNotes({search}) {
     const [editText , setEditText] = useState("")
 
     const filteredNotes =  useMemo(() => {
-        return search.trim() ? dataNotes.filter((note) => note.title.toLowerCase().includes(search.toLowerCase()) ||
-            note.text.toLowerCase().includes(search.toLowerCase())) : dataNotes;
+        return search.trim() ? dataNotes.filter((note) => 
+            note.title.toLowerCase().includes(search.toLowerCase()) ||
+            note.text.toLowerCase().includes(search.toLowerCase())) 
+            : dataNotes;
     }, [dataNotes, search])
+
 
     const addNewnotes = () => {
         if(title.trim() === "" || text.trim() === "") return 
@@ -71,9 +74,6 @@ export default function CardNotes({search}) {
             setEditText("");
     }
     
-            
-
-
     return (
         <>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg-grid-cols-6 gap-4 p-4 ">
@@ -82,9 +82,8 @@ export default function CardNotes({search}) {
                 key={notes.id}
                 className="relative h-40 flex flex-col  bg-white/20 justify-between backdrop-blur-xl shadow-md border-white/80 focus:outline-none rounded-md text-sm p-3 hover:scale-105 transition-transform duration-300" 
                 >
-                <div className="mb-4 overflow-hidden"
-                contentEditable>
-                    {edit && editId === notes.id ? (
+                <div className="mb-4 overflow-hidden">
+                    {editId === notes.id ? (
                         <>
                             <input type="text" 
                             className="focus:outline-none"
@@ -113,12 +112,12 @@ export default function CardNotes({search}) {
                     <div className="flex items-center text-xs">{formatDate(notes.date)}</div>
                     <div className="flex justify-between gap-2 text-sm">
                         <button 
-                        onClick={() => startEdit(notes.id) }t
+                        onClick={() => startEdit(notes.id) }
                         className="text-black mx-1 hover:text-white text-sm cursor-pointer"><BsPencilSquare /></button>
                         <button 
                         disabled={!edit}
                         onClick={saveEdit}
-                        className={`${edit ? 'text-green-600 hover:text-green-700 text-sm cursor-pointer' : 'text-slate-500 cursor-not-allowed'} `}
+                        className={`${editId === notes.id ? 'text-green-600 hover:text-green-700 text-sm cursor-pointer' : 'text-slate-500 cursor-not-allowed'} `}
                         ><FaSave /></button>
                         <button 
                         onClick={() => deleteNote(notes.id)}
